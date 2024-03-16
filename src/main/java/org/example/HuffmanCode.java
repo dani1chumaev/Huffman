@@ -7,6 +7,8 @@ import java.util.PriorityQueue;
 
 //main class
 public class HuffmanCode {
+
+    private static final Integer BITS_PER_CHAR = 8;
     //function to build Huffman tree
     public static void createHuffmanTree(String text)
     {
@@ -63,6 +65,7 @@ public class HuffmanCode {
             sb.append(huffmanCode.get(c));
         }
         System.out.println("The encoded string is: " + sb);
+        System.out.printf("Compression rate: %f%%\n", (double) sb.length() / (double)(text.length() * BITS_PER_CHAR) * 100);
         System.out.print("The decoded string is: ");
         if (isLeaf(root))
         {

@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 public class KWE {
 
     private final static Integer BITS_PER_TOKEN = 16;
+    private final static Integer BITS_PER_CHAR = 8;
     public static void createKWE(String text) {
         //base case: if user does not provides string
         if (text == null || text.length() == 0)
@@ -20,9 +21,13 @@ public class KWE {
         Map<String, String> keywords = freq.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> generateBinaryString(16)));
 
+        System.out.println("The initial string is: " + text);
+        System.out.println("Tokens: " + keywords);
         String encodeData = encodeData(text, keywords);
-
-        String decodeData = decodeData(text, keywords);
+        System.out.println("The encoded string is: " + encodeData);
+        System.out.printf("Compression rate: %f%%\n", (double) encodeData.length() / (double)(text.length() * BITS_PER_CHAR) * 100);
+        String decodeData = decodeData(encodeData, keywords);
+        System.out.print("The decoded string is: " + decodeData);
     }
 
     public static String encodeData(String input, Map<String, String> keywords) {
@@ -39,7 +44,9 @@ public class KWE {
             String bits = kwe.substring(i, Math.min(kwe.length(), i + BITS_PER_TOKEN));
             result.append(keywords.entrySet().stream()
                     .filter(entry -> entry.getValue().equals(bits))
-                    .findFirst());
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .get());
 //            result.append( kwe, i, Math.min(kwe.length(), i + BITS_PER_TOKEN));
         }
         return result.toString();
